@@ -3,10 +3,8 @@ import time
 import requests
 import streamlit as st
 
-# إعدادات الصفحة
 st.set_page_config(page_title="Judge Room", page_icon="⚖️", layout="centered")
 
-# حماية الصفحة: التأكد إنه الي دخل هو المُحكّم فعلاً
 if st.session_state.get("role") != "judge":
     st.warning("غير مصرح لك بالدخول. الرجاء تسجيل الدخول من الصفحة الرئيسية.")
     st.stop()
@@ -44,7 +42,6 @@ def format_remaining_time(remaining_seconds: int) -> str:
     minutes = remaining_seconds // 60
     seconds = remaining_seconds % 60
     return f"{minutes:02d}:{seconds:02d}"
-
 
 try:
     requests.post(f"{API_URL}/round/start")
@@ -95,13 +92,11 @@ def get_pending_participants(messages: list[dict]) -> list[str]:
     return pending_senders
 
 
-# عرض الرسائل السابقة
 for msg in current_messages :
     if msg["role"] == "judge":
         with st.chat_message("human", avatar="⚖️"):
             st.markdown(f"**المُحكّم:** {msg['content']}")
     else:
-        # رسائل الطرف (أ) والطرف (ب)
         avatar = "🅰️" if msg["sender"] == "الطرف (أ)" else "🅱️"
         with st.chat_message("ai", avatar=avatar):
             st.markdown(f"**{msg['sender']}:** {msg['content']}")
@@ -112,7 +107,6 @@ if pending_participants:
     with st.chat_message("ai", avatar="⌨️"):
         st.markdown(f"**{pending_label} يكتبـ/ـان الآن...**")
 
-# حقل الإدخال للمُحكّم
 if prompt := st.chat_input("اكتب سؤالك هنا..."):
     
     payload = {

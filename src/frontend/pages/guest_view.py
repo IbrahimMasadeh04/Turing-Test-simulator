@@ -2,7 +2,7 @@ import streamlit as st
 import time
 import requests
 
-# إعدادات الصفحة
+
 st.set_page_config(page_title="Live Stream", page_icon="👁️", layout="wide")
 
 st.title("البث المباشر لاختبار تورنغ 🔴")

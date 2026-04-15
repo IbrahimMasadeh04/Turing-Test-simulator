@@ -1,10 +1,8 @@
 import requests
 import streamlit as st
 
-# إعدادات الصفحة
 st.set_page_config(page_title="Judge Verdict", page_icon="🎯", layout="centered")
 
-# حماية الصفحة: التأكد إنه الي دخل هو المُحكّم فعلاً
 if st.session_state.get("role") != "judge":
     st.warning("غير مصرح لك بالدخول. الرجاء تسجيل الدخول من الصفحة الرئيسية.")
     st.stop()
