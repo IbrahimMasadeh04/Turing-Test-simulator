@@ -102,5 +102,5 @@ else:
         with st.chat_message("ai", avatar="⌨️"):
             st.markdown(f"**{pending_label} يكتبـ/ـان الآن...**")
 
-time.sleep(1)
+time.sleep(3)
 st.rerun()
