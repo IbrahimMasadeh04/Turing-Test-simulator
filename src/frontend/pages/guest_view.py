@@ -5,6 +5,21 @@ import requests
 
 st.set_page_config(page_title="Live Stream", page_icon="👁️", layout="wide")
 
+st.markdown(
+    """
+    <style>
+    [data-testid="stToast"] {
+        background-color: #f0f4f8 !important;
+        border: 1px solid #d0d8e0 !important;
+    }
+    [data-testid="stToast"] div {
+        color: #1a1a1a !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("البث المباشر لاختبار تورنغ 🔴")
 st.caption("راقب المحادثة وحاول أن تحزر: من هو الإنسان ومن هي الآلة؟")
 
@@ -32,8 +47,20 @@ except Exception as e:
         "remaining_seconds": 300,
     }
 
+try:
+    verdict_resp = requests.get("http://127.0.0.1:8000/api/chat/verdict/selection")
+    judge_selection = verdict_resp.json().get("selection")
+except Exception as e:
+    judge_selection = None
+
 st.metric("الوقت المتبقي", format_remaining_time(round_state["remaining_seconds"]))
 
+if "last_seen_selection" not in st.session_state:
+    st.session_state.last_seen_selection = None
+
+if judge_selection and judge_selection != st.session_state.last_seen_selection:
+    st.toast(f"👀 المُحكّم يفكّر حالياً باختيار: **{judge_selection}**", icon="🔔")
+    st.session_state.last_seen_selection = judge_selection
 
 def get_pending_participants(messages: list[dict]) -> list[str]:
     last_judge_index = -1

@@ -14,6 +14,7 @@ app = FastAPI(
 chat_history = []
 round_started_at: float | None = None
 ROUND_DURATION_SECONDS = 5 * 60
+judge_current_selection: str | None = None
 
 class Message(BaseModel):
     role: str
@@ -91,11 +92,27 @@ def genai_reply(question: str, history: list[dict], judge_gender: str | None):
 def reset_chat():
     """endpoint to clear the chat history (for testing purposes)"""
 
-    global round_started_at
+    global round_started_at, judge_current_selection
 
     chat_history.clear()
     round_started_at = None
+    judge_current_selection = None
     return { "status": "cleared" }
+
+class VerdictSelection(BaseModel):
+    selection: str | None
+
+@app.post("/api/chat/verdict/selection")
+def set_verdict_selection(verdict: VerdictSelection):
+    """Update the judge's current selection (live tracking)"""
+    global judge_current_selection
+    judge_current_selection = verdict.selection
+    return {"status": "success"}
+
+@app.get("/api/chat/verdict/selection")
+def get_verdict_selection():
+    """Get the judge's current selection"""
+    return {"selection": judge_current_selection}
 
 @app.post("/api/chat/human_reply")
 def human_reply(message: Message):

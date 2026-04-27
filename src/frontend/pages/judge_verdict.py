@@ -30,7 +30,14 @@ choice = st.radio(
     options=["الطرف (أ)", "الطرف (ب)"],
     horizontal=True,
     key="judge_final_guess",
+    index=None
 )
+
+if choice:
+    try:
+        requests.post("http://127.0.0.1:8000/api/chat/verdict/selection", json={"selection": choice})
+    except:
+        pass
 
 if st.button("إرسال التوقع", type="primary"):
     if choice == "الطرف (ب)":
